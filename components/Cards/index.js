@@ -21,41 +21,72 @@
 const cardsContainer = document.querySelector('.cards-container')
 // console.log(cardsContainer)
 
-const articleTitle = 'random';
+// const articleTitle = 'random';
 
-const cardList =[
-    'bootstrap',
-    'javascript',
-    'jquery',
-    'node',
-    'technology'
-];
+// const cardList =[
+//     'bootstrap',
+//     'javascript',
+//     'jquery',
+//     'node',
+//     'technology'
+// ];
 
 
-cardList.forEach((res) =>{
-    axios.get(`https://lambda-times-backend.herokuapp.com/articles`)
-    .then(res =>{
-        console.log(res.data);
-        cardsContainer.appendChild(article(res.articles, res.authorName, res.authorPhoto, res.headline))
-    });
-});
 
-axios.get(`https://lambda-times-backend.herokuapp.com/articles`)
+// cardList.forEach((res) =>{
+//     axios.get(`https://lambda-times-backend.herokuapp.com/articles`)
+//     .then(res =>{
+//         // console.log(res.data);
+//         cardsContainer.appendChild(articleRandom(res.data))
+//     });
+// });
+
+axios.get("https://lambda-times-backend.herokuapp.com/articles")
 .then(res=>{
-    // console.log('cards', res.data);
-    const card = article(res.data)
-    cardsContainer.appendChild(card)
-  })
+    console.log('cards', res.data);
+    
+    //getting an object from res.data
+    const articles = res.data.articles;
+    // console.log(articles.constructor.name);
+    // console.log(articles)
+    //object.enteries turns (articles) into an array to loop over 
+    
+    Object.entries(articles).forEach(article=>{
+    // article is an array inside the forEach loop
+    // console.log(article.constructor.name)
+    //looping through article
+        article.forEach(arrayOne =>{
+            //confirming if arrayOne is an array 
+            if (arrayOne.constructor.name == 'Array'){
+                // console.log('true')
+                // console.log(arrayOne.constructor.name)
+                //loop through the array and loops objects
+                arrayOne.forEach(object=>{
+                    // object has keys and values
+                    // keys: authorName, authorPhoto, healine
+                    // console.log(object.authorPhoto)
+                    // object.authorPhoto
+
+                    //appending card to container using objects.(keys)
+                    return cardsContainer.appendChild(articleRandom(object.authorName, object.authorPhoto, object.headline))
+                })
+            }else{
+                // just for your own sanity. check if array or not
+                // console.log('false')
+                // console.log(arrayOne.constructor.name)
+            }
+        })
+        
+        
+    })
+})
   .catch((error)=>{
       console.log('api is down', error)
-  });
+  })
 
 
 
-
-
-
-function article(title, authorName, authorPhoto, headline){
+function articleRandom(authorName, authorPhoto, headline){
     //creating element
     const card = document.createElement('div');
     const headLine = document.createElement('div');
@@ -71,9 +102,9 @@ function article(title, authorName, authorPhoto, headline){
     imgcont.classList.add('img-container');
 
     //setting source
-    avatar.src = 'assets/max.jpg';
-    headLine.textContent = 'hello';
-    name.textContent = 'paul';
+    avatar.src = authorPhoto;
+    headLine.textContent = headline;
+    name.textContent = authorName;
 
     //parent/child append
     card.appendChild(headLine);
