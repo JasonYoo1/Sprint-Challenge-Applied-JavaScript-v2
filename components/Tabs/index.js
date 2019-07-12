@@ -39,6 +39,6 @@ function createNewTab(topic){
     newTab.classList.add('tab');
     newTab.textContent = topic.Title
     topics.appendChild(newTab)
-    console.log(newTab)
+    // console.log(newTab)
     return newTab;
   };
